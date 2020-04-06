@@ -1,7 +1,7 @@
 <html>
 
 <head>
-
+    <script src="/js/jquery.min.js"></script>
 </head>
 <style>
     #FooDiv {
@@ -11,19 +11,28 @@
     }
 
     #plant {
-        width: 50px;
+        width: 150px;
         position: absolute;
         left: 30px;
         top: 30px;
+        transition: top 1s, left 1s, width 1s, height 1s;
     }
 
     #plant:hover {
         background-color: lightsteelblue;
         box-shadow: 0 0 40px 5px teal;
     }
+
+    .moveTest {
+        left: 500px !important;
+        top: 500px !important;
+        width: 50px !important;
+    }
 </style>
 <script>
-
+    function foo() {
+        $('#plant').toggleClass('moveTest');
+    }
 </script>
 
 <body>
@@ -54,7 +63,7 @@
 </svg> -->
 
 
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59.3 104.3" id="plant">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59.3 104.3" id="plant" onclick="foo()">
             <g transform="translate(-.7 -.4)" fill="none" stroke="#000">
               <path d="M8.5 7.1h17.1v17.2H8.5z" stroke-width="1.1"/>
               <path d="M1.4 1.1h58v103h-58z" stroke-width="1.3"/>
