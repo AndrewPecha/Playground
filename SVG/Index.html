@@ -1,41 +1,97 @@
 <html>
+<!-- 04.05.2020 8-12 (3) -->
+<!-- 04.06.2020  -->
 
 <head>
     <script src="/js/jquery.min.js"></script>
 </head>
 <style>
-    #FooDiv {
-        position: absolute;
-        width: 300px;
-        height: 300px;
-    }
-
-    #plant {
+    #PlantDiv {
         width: 150px;
         position: absolute;
-        left: 30px;
-        top: 30px;
+        left: 700px;
+        top: 700px;
         transition: top .5s, left .5s, width .5s, height .5s linear;
+        opacity: 0;
     }
 
-    #plant:hover {
-        background-color: #f77d6a;
+    #PlantSvg {
+        width: inherit;
+        height: inherit;
+    }
+
+    #PlantSvg:hover g{
+        fill: #f77d6a;
         box-shadow: 0 0 40px 5px teal;
     }
 
-    #plant:hover #BuildingWindows {
+    #PlantSvg:hover #BuildingWindows {
         fill: #ede464
-    }
+    }    
 
     .moveTest {
         left: 500px !important;
         top: 500px !important;
         width: 50px !important;
     }
+
+    #container1 {
+        border: 2px solid gray;
+        width: 30%;
+        height: 10%;
+        margin-top: 1%;
+    }
+
+    #container2 {
+        border: 2px solid gray;
+        width: 26%;
+        height: 33%;
+        margin-top: 11%;
+        margin-left: 33%;
+    }
+
+    #svgContainer1 {
+        border: 1px dashed red;     
+        width: 99.5%;
+        height: 99.5%;   
+    }
+
+    #svgContainer2 {
+        border: 1px dashed red;     
+        width: 99.5%;
+        height: 99.5%;   
+    }
 </style>
 <script>
-    function foo() {
-        $('#plant').toggleClass('moveTest');
+    $(document).ready(function() {        
+        movePlant1($('#PlantDiv')[0], 'svgContainer1');  
+        setTimeout(function() {
+            $('#PlantDiv').css('opacity', '1')
+        }, 500)      
+        
+    });
+
+    function moveTo(e, target) {
+        var targetElement = $('#' + target);
+        var movingElement = $(e);
+
+        var targetPosition = targetElement.position();
+        targetPosition.top = targetPosition.top * 1.1;
+        targetPosition.left = targetPosition.left * .9;
+        movingElement.offset(targetPosition);
+
+        movingElement.width(targetElement.width() * .9);
+        movingElement.height(targetElement.height() * .9);
+    }
+
+    function movePlant1(e, target) {
+        $(e).attr('onclick', 'movePlant2(this, "svgContainer2")');
+        moveTo(e, target);
+    }
+
+    function movePlant2(e, target) {
+        $(e).attr('onclick', 'movePlant1(this, "svgContainer1")');
+        moveTo(e, target);
     }
 </script>
 
@@ -66,17 +122,30 @@
  d="M166.000,159.000 L74.440,191.586 L0.440,128.586 L18.000,33.000 L109.560,0.414 L183.560,63.414 L166.000,159.000 Z"/>
 </svg> -->
 
+    <div id="container1">
+        <div id="svgContainer1"></div>
+    </div>
 
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59.3 104.3" id="plant" onclick="foo()">
+    <div id="container2">
+        <div id="svgContainer2"></div>
+    </div>
+
+    <div id="PlantDiv" onclick="movePlant1(this, 'svgContainer1')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59.3 104.3" id="PlantSvg">
             <g transform="translate(-.7 -.4)" fill="none" stroke="#000">
-              <path d="M1.4 1.1h58v103h-58z" stroke-width="1.3"/>
-              <path id="BuildingWindows" d="M34.9 7.1H52v17.2H35zM8.6 29.5h17.2v17.1H8.6zM35 29.5h17.2v17.1H35zM8.6 52h17.2v17H8.6zM35 52h17.2v17H35zM8.5 7.1h17.1v17.2H8.5z" stroke-width="1.1"/>
-              <path stroke-width=".8" d="M21.3 93h7.2v11h-7.2zM34.3 93h7.2v11h-7.2z"/>
-              <circle cx="27.3" cy="98.7" stroke-width=".4" r=".5"/>
-              <circle cx="35.6" cy="98.7" stroke-width=".4" r=".5"/>
-              <path stroke-width=".4" d="M22.7 94.1h1.8v2.7h-1.8zM25.2 94.1H27v2.7h-1.8zM35.7 94.3h1.8V97h-1.8zM38.2 94.3H40V97h-1.8z"/>
+                <path d="M1.4 1.1h58v103h-58z" stroke-width="1.3" />
+                <path id="BuildingWindows"
+                    d="M34.9 7.1H52v17.2H35zM8.6 29.5h17.2v17.1H8.6zM35 29.5h17.2v17.1H35zM8.6 52h17.2v17H8.6zM35 52h17.2v17H35zM8.5 7.1h17.1v17.2H8.5z"
+                    stroke-width="1.1" />
+                <path stroke-width=".8" d="M21.3 93h7.2v11h-7.2zM34.3 93h7.2v11h-7.2z" />
+                <circle cx="27.3" cy="98.7" stroke-width=".4" r=".5" />
+                <circle cx="35.6" cy="98.7" stroke-width=".4" r=".5" />
+                <path stroke-width=".4"
+                    d="M22.7 94.1h1.8v2.7h-1.8zM25.2 94.1H27v2.7h-1.8zM35.7 94.3h1.8V97h-1.8zM38.2 94.3H40V97h-1.8z" />
             </g>
-          </svg>
+        </svg>
+    </div>
+
 </body>
 
 </html>
