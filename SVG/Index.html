@@ -58,6 +58,12 @@
         flex-grow: 1; 
     }
 
+    #svgContainer2 {
+        border: 1px dashed red;     
+        width: 99.5%;
+        height: 99.5%;   
+    }
+
     #svgContainer3 {
         border: 1px dashed blue;     
         flex-grow: 1; 
@@ -69,13 +75,7 @@
     #svgContainer5 {
         border: 1px dashed blue;     
         flex-grow: 1; 
-    }
-
-    #svgContainer2 {
-        border: 1px dashed red;     
-        width: 99.5%;
-        height: 99.5%;   
-    }
+    }    
 </style>
 <script>
     $(document).ready(function() {        
@@ -88,13 +88,16 @@
 
     function moveTo(e, target) {
         var targetElement = $('#' + target);
-        var movingElement = $(e);
-
-        var targetPosition = targetElement.position();
-        movingElement.offset(targetPosition);
+        var movingElement = $(e);        
 
         movingElement.width(targetElement.width() * .5);
         movingElement.height(targetElement.height() * .5);
+
+        var targetPosition = targetElement.position();
+        var targetElementMidpoint = targetElement.width() / 2;
+        var movingElementMidpoint = movingElement.width() / 2;
+        targetPosition.left = targetElementMidpoint - movingElementMidpoint;
+        movingElement.offset(targetPosition);
     }
 
     function movePlant1(e, target) {
@@ -103,38 +106,12 @@
     }
 
     function movePlant2(e, target) {
-        $(e).attr('onclick', 'movePlant1(this, "svgContainer1")');
+        $(e).attr('onclick', 'movePlant1(this, "svgContainer5")');
         moveTo(e, target);
     }
 </script>
 
 <body>
-    <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-        x="0px" y="0px" width="450px" height="100px" viewBox="0 0 450 100">
-            <rect x="10" y="5" fill="white" stroke="black" width="90" height="90"/>
-            <circle fill="white" stroke="black" cx="170" cy="50" r="45"/>
-            <polygon fill="white" stroke="black" points="279,5 294,35 328,40 303,62 309,94 
-            279,79 248,94 254,62 230,39 263,35 "/>
-            <line fill="none" stroke="black" x1="410" y1="95" x2="440" y2="6"/>
-            <line fill="none" stroke="black" x1="360" y1="6" x2="360" y2="95"/>
-        </svg>
-
-        <svg viewBox="0 0 218.8 87.1">
-            <g fill="none" stroke="#000">
-              <path d="M7.3 75L25.9 6.8s58.4-6.4 33.5 13-41.1 32.8-11.2 30.8h15.9v5.5s42.6 18.8 0 20.6" />
-              <path d="M133.1 58.2s12.7-69.2 24.4-47.5c0 0 4.1 8.6 9.5.9 0 0 5-10 10.4.9 0 0 12.2 
-          32.6 13.6 43 0 0 39.8 5.4 15.8 15.4-13.2 5.5-53.8 13.1-77.4 5.9.1 0-51.9-15.4 3.7-18.6z" />
-            </g>
-          </svg>
-
-          <svg 
- xmlns="http://www.w3.org/2000/svg"
- xmlns:xlink="http://www.w3.org/1999/xlink"
- width="184px" height="192px" viewBox="0 0 184 192">
-<path fill-rule="evenodd"  fill="rgb(230, 14, 23)"
- d="M166.000,159.000 L74.440,191.586 L0.440,128.586 L18.000,33.000 L109.560,0.414 L183.560,63.414 L166.000,159.000 Z"/>
-</svg> -->
-
     <div id="container1">
         <div id="svgContainer1"></div>
         <div id="svgContainer3"></div>
