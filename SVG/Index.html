@@ -78,7 +78,7 @@
     }    
 </style>
 <script>
-    $(document).ready(function() {        
+    $(window).on('load', function() {        
         movePlant1($('#PlantDiv')[0], 'svgContainer1');  
         setTimeout(function() {
             $('#PlantDiv').css('opacity', '1')
@@ -90,13 +90,22 @@
         var targetElement = $('#' + target);
         var movingElement = $(e);        
 
-        movingElement.width(targetElement.width() * .5);
-        movingElement.height(targetElement.height() * .5);
+        var newWidth = targetElement.width() * .5;
+        var newHeight = targetElement.height() * .5;
+
+        movingElement.width(newWidth);
+        movingElement.height(newHeight);
 
         var targetPosition = targetElement.position();
-        var targetElementMidpoint = targetElement.width() / 2;
-        var movingElementMidpoint = movingElement.width() / 2;
-        targetPosition.left = targetElementMidpoint - movingElementMidpoint;
+
+        var targetElementMidpointX = targetElement.width() / 2;
+        var movingElementMidpointX = newWidth / 2;
+        targetPosition.left = targetElementMidpointX - movingElementMidpointX + targetPosition.left;
+
+        var targetElementMidpointY = targetElement.height() / 2;
+        var movingElementMidpointY = newHeight / 2;
+        targetPosition.top = targetElementMidpointY - movingElementMidpointY + targetPosition.top;
+
         movingElement.offset(targetPosition);
     }
 
