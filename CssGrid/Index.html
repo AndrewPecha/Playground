@@ -1,13 +1,89 @@
 <html>
     <head>
-
+        <script src="/js/jquery.min.js"></script>
     </head>
 
     <style>
+        #XgridContainer {
+            width: 500px;
+            height: 500px;
+            border: 1px solid gray;
+            display: grid;
+            justify-items: center;
+            grid-template-rows: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
 
+        .gridItem-1 {
+            grid-column-start: auto;
+            grid-column-end: auto;
+            grid-row-start: auto;
+            grid-row-end: auto;
+        }
     </style>
 
     <script>
         
     </script>
+
+    <script>
+        function repeatFr(iterations) {
+            var returnString = "";
+
+            for(var i = 0; i < iterations; i++){
+                returnString += " 1fr";
+            }
+
+            return returnString;
+        }
+
+        (function ($) {
+
+            $.fn.createGridContainer = function (options) {
+
+                if (this.attr('id') === undefined)
+                    throw "selector must have an id to create grid container"
+
+                var settings = $.extend({
+                    data: [],
+                    rows: 2,
+                    columns: 3,
+                    width: '500px',
+                    height: '500px'
+                }, options);
+
+                $("<style type='text/css'> #" + this.attr('id') + 
+                    " { width: "+ settings.width +"; height: "+ settings.width +"; border: 1px solid red; display: grid; justify-items: center; grid-template-rows: "+
+                    repeatFr(settings.rows) +"; grid-template-columns: "+ repeatFr(settings.columns) +";} </style>")
+                    .appendTo("head");
+
+                return this;
+                
+            };            
+
+            // var rows = Math.floor(Math.sqrt(settings.sections));
+            // var columns = Math.ceil(Math.sqrt(settings.sections));
+
+            // for (var i = 0; i < rows; i++) {
+            //     for (let j = 0; j < columns; j++) {
+
+            //     }
+            // }
+
+        }(jQuery));
+
+        $(window).on('load', function() {
+            $("#gridContainer").createGridContainer({
+                rows: 10,
+                columns: 2
+            });
+        });
+    </script>
+
+    <body>
+        <div id='gridContainer'>
+            <div>foo</div>
+            <div>foo</div>
+        </div>
+    </body>
 </html>
