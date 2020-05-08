@@ -30,6 +30,13 @@
             height: 99%;
             text-align: center;
         }
+
+        .absoluteBorder {
+            border: 1px dotted green;
+            text-align: center;
+            position: absolute;
+            transition: top 1s, left 1s, width 1s, height 1s;
+        }
     </style>
 
     <script>
@@ -45,14 +52,16 @@
                 rows: 10,
                 columns: 2,
                 data: ['foo', 123, , 'bar', 'bazboo'],
-                destinationContainer: 'gridContainer2'
+                destinationContainer: 'gridContainer2',
+                absolutePositionedDivs: true
             });
 
             $("#gridContainer2").createGridContainer({
                 rows: 2,
                 columns: 2,
                 data: ['foo', 123, , 'bar', 'bazboo'],
-                destinationContainer: 'gridContainer'
+                destinationContainer: 'gridContainer',
+                absolutePositionedDivs: true
             });
         });
     </script>
