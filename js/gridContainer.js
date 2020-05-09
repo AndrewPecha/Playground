@@ -21,6 +21,44 @@ function moveTo(e, target) {
     movingElement.offset(targetPosition);
 }
 
+function moveToGridContainer(e, sourceContainerId, targetContainerId) {
+    var movingElement = $(e);
+    var targetContainer = $('#' + targetContainerId);
+    var targetGridCell = getNextAvailableCell(targetContainer);
+    var sourceContainer = $('#' + sourceContainerId);
+    var sourceGridCell = sourceContainer.children().closestToOffset(movingElement.offset());
+
+    var newWidth = targetGridCell.width();
+    var newHeight = targetGridCell.height();
+    movingElement.width(newWidth);
+    movingElement.height(newHeight);
+
+    var targetPosition = targetGridCell.offset();
+
+    var targetElementMidpointX = targetGridCell.width();
+    var movingElementMidpointX = newWidth;
+    targetPosition.left = targetElementMidpointX - movingElementMidpointX + targetPosition.left;
+
+    var targetElementMidpointY = targetGridCell.height();
+    var movingElementMidpointY = newHeight
+    targetPosition.top = targetElementMidpointY - movingElementMidpointY + targetPosition.top;
+
+    movingElement.offset(targetPosition);
+    movingElement.unbind('click').click(function() { moveToGridContainer(this, targetContainerId, targetContainer.data('gridSettings').destinationContainerId) });
+    sourceGridCell.attr('data-content-available', false);
+    targetGridCell.attr('data-content-available', true);
+}
+
+function getNextAvailableCell(gridContainer) {
+    var targetCells = gridContainer.children();
+    for(var i = 0; i < targetCells.length; i++) {
+        if(targetCells.eq(i).attr('data-content-available') === 'false'){
+            return targetCells.eq(i);
+        }
+            
+    }
+}
+
 function repeatFr(iterations) {
     var returnString = "";
 
@@ -31,7 +69,7 @@ function repeatFr(iterations) {
     return returnString;
 }
 
-function buildCellPositions(selector, settings) {    
+function buildCellPositions(selector, settings, sourceContainerId) {    
     var columnLengthsParsed = $('#gridContainer').css('grid-template-columns').split(" ");
     var columnLengths = [];
     
@@ -76,7 +114,7 @@ function buildCellPositions(selector, settings) {
                 }
             }
 
-            cellPositions[currentCellPosition] = { top: top + parentContainerPosition.top, left: left + parentContainerPosition.left};            
+            cellPositions[currentCellPosition] = { top: top + parentContainerPosition.top, left: left + parentContainerPosition.left };            
         }
     }
 
@@ -85,7 +123,7 @@ function buildCellPositions(selector, settings) {
         for(var j = 0; j < columnHeights.length; j++) {
             var currentCellPosition = (i * columnHeights.length) + j;
             
-            cellSizes[currentCellPosition] = { width: columnLengths[i], height: columnHeights[j]};            
+            cellSizes[currentCellPosition] = { width: columnLengths[i], height: columnHeights[j] };            
         }
     }
 
@@ -97,27 +135,24 @@ function buildCellPositions(selector, settings) {
             selector
                 .parent()
                 .append($("<div>")
-                .attr('data-content-available', 'true')
                 .addClass('absoluteBorder')
                 .html(settings.data[i])
                 .offset(currentPosition)
                 .width(width)
                 .height(height)
-                .click(function() {moveTo(this, settings.destinationContainer)}));
+                .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); }));
         }
 
-        else {
-            selector
-                .parent()
-                .append($("<div>")
-                .attr('data-content-available', 'false')
-                .addClass('absoluteBorder')
-                .html(settings.data[i])
-                .offset(currentPosition)
-                .width(width)
-                .height(height)
-                .click(function() {moveTo(this, settings.destinationContainer)}));
-        }        
+        // else {
+        //     selector
+        //         .parent()
+        //         .append($("<div>")
+        //         .addClass('absoluteBorder')
+        //         .offset(currentPosition)
+        //         .width(width)
+        //         .height(height)
+        //         .click(function() {moveToGridContainer(this, sourceElementId, settings.destinationContainer)}));
+        // }        
     }
 }
 
@@ -136,42 +171,70 @@ function buildCellPositions(selector, settings) {
             columns: 3,
             width: '500px',
             height: '500px',
-            destinationContainer: '',
+            destinationContainerId: '',
             absolutePositionedDivs: false
         }, options);
 
         this.data('gridSettings', settings);
         $("<style type='text/css'> #" + elementId + 
-            " { width: "+ settings.width +"; height: "+ settings.width +"; border: 1px solid red; display: grid; justify-items: center; grid-template-rows: repeat("+ settings.rows +", 1fr); grid-template-columns: repeat("+ settings.columns +", 1fr);} " +
-            ".gridSvg { width: 99%; height: 99%;} </style>")
+            " { width: "+ settings.width +"; height: "+ settings.width +"; display: grid; justify-items: center; grid-template-rows: repeat("+ settings.rows +", 1fr); grid-template-columns: repeat("+ settings.columns +", 1fr);} " +
+            ".gridSvg { width: 99%; height: 99%; } </style>")
             .appendTo("head");
 
         var totalCells = settings.rows * settings.columns;
-        if (settings.absolutePositionedDivs) {
-            buildCellPositions(this, settings)
-        }
-        else {
-            for(var i = 0; i < totalCells; i++) {                
-                if(settings.data[i] !== undefined){
-                    this.append($("<div>").attr('data-content-available', 'true').addClass('border').click(function() {moveTo(this, settings.destinationContainer)}).html(settings.data[i]));
-                }
-                else {
-                    this.append($("<div>").attr('data-content-available', 'false').addClass('border') .click(function() {moveTo(this, settings.destinationContainer)}));
-                }
-            }
+        buildCellPositions(this, settings, elementId)        
+    
+        for(var i = 0; i < totalCells; i++) {
+            this.append($("<div>").addClass('border').attr('data-content-available', settings.data[i] !== undefined));
         }
 
         return this;
         
-    };            
+    };
 
-    // var rows = Math.floor(Math.sqrt(settings.sections));
-    // var columns = Math.ceil(Math.sqrt(settings.sections));
-
-    // for (var i = 0; i < rows; i++) {
-    //     for (let j = 0; j < columns; j++) {
-
-    //     }
-    // }
+    //function taken from https://stackoverflow.com/a/2337775/8484685
+    $.fn.closestToOffset = function(offset) {
+        var el = null,
+            elOffset,
+            x = offset.left,
+            y = offset.top,
+            distance,
+            dx,
+            dy,
+            minDistance;
+        this.each(function() {
+            var $t = $(this);
+            elOffset = $t.offset();
+            right = elOffset.left + $t.width();
+            bottom = elOffset.top + $t.height();
+    
+            if (
+                x >= elOffset.left &&
+                x <= right &&
+                y >= elOffset.top &&
+                y <= bottom
+            ) {
+                el = $t;
+                return false;
+            }
+    
+            var offsets = [
+                [elOffset.left, elOffset.top],
+                [right, elOffset.top],
+                [elOffset.left, bottom],
+                [right, bottom],
+            ];
+            for (var off in offsets) {
+                dx = offsets[off][0] - x;
+                dy = offsets[off][1] - y;
+                distance = Math.sqrt(dx * dx + dy * dy);
+                if (minDistance === undefined || distance < minDistance) {
+                    minDistance = distance;
+                    el = $t;
+                }
+            }
+        });
+        return el;
+    };
 
 }(jQuery));

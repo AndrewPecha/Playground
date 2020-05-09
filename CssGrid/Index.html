@@ -25,7 +25,7 @@
         }
 
         .border {
-            border: 1px dotted green;
+            border: 1px dotted blue ;
             width: 99%;
             height: 99%;
             text-align: center;
@@ -52,15 +52,15 @@
                 rows: 10,
                 columns: 2,
                 data: ['foo', 123, , 'bar', 'bazboo'],
-                destinationContainer: 'gridContainer2',
+                destinationContainerId: 'gridContainer2',
                 absolutePositionedDivs: true
             });
 
             $("#gridContainer2").createGridContainer({
                 rows: 2,
                 columns: 2,
-                data: ['foo', 123, , 'bar', 'bazboo'],
-                destinationContainer: 'gridContainer',
+                //data: ['foo', 123, , 'bar', 'bazboo'],
+                destinationContainerId: 'gridContainer',
                 absolutePositionedDivs: true
             });
         });
