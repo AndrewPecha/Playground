@@ -35,18 +35,11 @@ function moveToGridContainer(e, sourceContainerId, targetContainerId) {
 
     var targetPosition = targetGridCell.offset();
 
-    var targetElementMidpointX = targetGridCell.width();
-    var movingElementMidpointX = newWidth;
-    targetPosition.left = targetElementMidpointX - movingElementMidpointX + targetPosition.left;
-
-    var targetElementMidpointY = targetGridCell.height();
-    var movingElementMidpointY = newHeight
-    targetPosition.top = targetElementMidpointY - movingElementMidpointY + targetPosition.top;
-
     movingElement.offset(targetPosition);
     movingElement.unbind('click').click(function() { moveToGridContainer(this, targetContainerId, targetContainer.data('gridSettings').destinationContainerId) });
     sourceGridCell.attr('data-content-available', false);
     targetGridCell.attr('data-content-available', true);
+    movingElement.attr('data-current-container', targetContainerId);
 }
 
 function getNextAvailableCell(gridContainer) {
@@ -69,7 +62,7 @@ function repeatFr(iterations) {
     return returnString;
 }
 
-function buildCellPositions(selector, settings, sourceContainerId) {    
+function buildCells(selector, settings, sourceContainerId) {    
     var columnLengthsParsed = $('#gridContainer').css('grid-template-columns').split(" ");
     var columnLengths = [];
     
@@ -140,27 +133,38 @@ function buildCellPositions(selector, settings, sourceContainerId) {
                 .offset(currentPosition)
                 .width(width)
                 .height(height)
+                .attr('data-current-container', sourceContainerId)
                 .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); }));
-        }
+        }     
+    }
+}
 
-        // else {
-        //     selector
-        //         .parent()
-        //         .append($("<div>")
-        //         .addClass('absoluteBorder')
-        //         .offset(currentPosition)
-        //         .width(width)
-        //         .height(height)
-        //         .click(function() {moveToGridContainer(this, sourceElementId, settings.destinationContainer)}));
-        // }        
+function rebuildCellPositions(elementId, data) {
+    var selector = $('#' + elementId);
+    var settings = selector.data('gridSettings');
+    settings.data = data;
+    selector.data('gridSettings', settings);
+    $('#' + elementId).html('');
+
+    buildCells(selector, settings, elementId);
+}
+
+function buildCellContainers(selector, settings) {
+    var totalCells = settings.rows * settings.columns;
+    for(var i = 0; i < totalCells; i++) {
+        selector.append($("<div>").addClass('border').attr('data-content-available', settings.data[i] !== undefined));
     }
 }
 
 (function ($) {
 
-    $.fn.createGridContainer = function (options) {
+    $.fn.createGridContainer = function (options) {        
 
         var elementId = this.attr('id');
+        if(this.data('gridSettings') !== undefined) {
+            this.html('');
+            $('[data-current-container='+  elementId  +']').remove();
+        }
 
         if (elementId === undefined)
             throw "selector must have an id to create grid container"
@@ -172,7 +176,7 @@ function buildCellPositions(selector, settings, sourceContainerId) {
             width: '500px',
             height: '500px',
             destinationContainerId: '',
-            absolutePositionedDivs: false
+            redraw: function(data) { rebuildCellPositions(elementId, data); }
         }, options);
 
         this.data('gridSettings', settings);
@@ -181,12 +185,9 @@ function buildCellPositions(selector, settings, sourceContainerId) {
             ".gridSvg { width: 99%; height: 99%; } </style>")
             .appendTo("head");
 
-        var totalCells = settings.rows * settings.columns;
-        buildCellPositions(this, settings, elementId)        
-    
-        for(var i = 0; i < totalCells; i++) {
-            this.append($("<div>").addClass('border').attr('data-content-available', settings.data[i] !== undefined));
-        }
+        
+        buildCells(this, settings, elementId);          
+        buildCellContainers(this, settings);        
 
         return this;
         
