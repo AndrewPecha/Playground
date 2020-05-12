@@ -25,6 +25,10 @@ function moveToGridContainer(e, sourceContainerId, targetContainerId) {
     var movingElement = $(e);
     var targetContainer = $('#' + targetContainerId);
     var targetGridCell = getNextAvailableCell(targetContainer);
+    if(targetGridCell === undefined) {
+        console.log('no cell available in grid container ' + targetContainerId);
+        return;
+    }
     var sourceContainer = $('#' + sourceContainerId);
     var sourceGridCell = sourceContainer.children().closestToOffset(movingElement.offset());
 
