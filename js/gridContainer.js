@@ -156,7 +156,7 @@ function rebuildCellPositions(elementId, data) {
 function buildCellContainers(selector, settings) {
     var totalCells = settings.rows * settings.columns;
     for(var i = 0; i < totalCells; i++) {
-        selector.append($("<div>").addClass('border').attr('data-content-available', settings.data[i] !== undefined));
+        selector.append($("<div>").addClass('cellContainer').attr('data-content-available', settings.data[i] !== undefined));
     }
 }
 
@@ -175,18 +175,20 @@ function buildCellContainers(selector, settings) {
 
         var settings = $.extend({
             data: [],
-            rows: 2,
-            columns: 3,
+            rows: options.data === undefined ? 2 : Math.ceil(options.data.length/(Math.floor(Math.sqrt(options.data.length)))),
+            columns: options.data  === undefined ? 3 : Math.floor(Math.sqrt(options.data.length)),
             width: '500px',
             height: '500px',
             destinationContainerId: '',
             redraw: function(data) { rebuildCellPositions(elementId, data); }
         }, options);
 
+        debugger;
+
         this.data('gridSettings', settings);
         $("<style type='text/css'> #" + elementId + 
             " { width: "+ settings.width +"; height: "+ settings.height +"; display: grid; justify-items: center; grid-template-rows: repeat("+ settings.rows +", 1fr); grid-template-columns: repeat("+ settings.columns +", 1fr);} " +
-            ".gridSvg { width: 100%; height: 100%; } </style>")
+            ".cellContainer { width: 100%; height: 100%; } .gridSvg { width: 99%; height: 100% } </style>")
             .appendTo("head");
 
         
