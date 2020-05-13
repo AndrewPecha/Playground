@@ -67,7 +67,7 @@ function repeatFr(iterations) {
 }
 
 function buildCells(selector, settings, sourceContainerId) {    
-    var columnLengthsParsed = $('#gridContainer').css('grid-template-columns').split(" ");
+    var columnLengthsParsed = $('#' + sourceContainerId).css('grid-template-columns').split(" ");
     var columnLengths = [];
     
     for(var i = 0; i < columnLengthsParsed.length; i++) {
@@ -185,8 +185,8 @@ function buildCellContainers(selector, settings) {
 
         this.data('gridSettings', settings);
         $("<style type='text/css'> #" + elementId + 
-            " { width: "+ settings.width +"; height: "+ settings.width +"; display: grid; justify-items: center; grid-template-rows: repeat("+ settings.rows +", 1fr); grid-template-columns: repeat("+ settings.columns +", 1fr);} " +
-            ".gridSvg { width: 99%; height: 99%; } </style>")
+            " { width: "+ settings.width +"; height: "+ settings.height +"; display: grid; justify-items: center; grid-template-rows: repeat("+ settings.rows +", 1fr); grid-template-columns: repeat("+ settings.columns +", 1fr);} " +
+            ".gridSvg { width: 100%; height: 100%; } </style>")
             .appendTo("head");
 
         
