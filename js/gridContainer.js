@@ -144,6 +144,7 @@ function buildCells(selector, settings, sourceContainerId) {
                     .append($("<div/>")
                         .addClass("GCCellText")
                         .html(settings.data[i].text))
+                    .click(settings.data[i].function === undefined ? function() { return false; } : settings.data[i].function)
                     .attr('data-cell-value', settings.data[i].value));
             }
             else {
@@ -157,6 +158,7 @@ function buildCells(selector, settings, sourceContainerId) {
                     .height(height)
                     .attr('data-current-container', sourceContainerId)
                     .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); })
+                    .click(settings.data[i].function === undefined ? function() { return false; } : settings.data[i].function)
                     .attr('data-cell-value', settings.data[i].value));
             }
             
