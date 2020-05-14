@@ -143,7 +143,8 @@ function buildCells(selector, settings, sourceContainerId) {
                         .html(settings.data[i].content))
                     .append($("<div/>")
                         .addClass("GCCellText")
-                        .html(settings.data[i].text)));
+                        .html(settings.data[i].text))
+                    .attr('data-cell-value', settings.data[i].value));
             }
             else {
                 selector
@@ -155,7 +156,8 @@ function buildCells(selector, settings, sourceContainerId) {
                     .width(width)
                     .height(height)
                     .attr('data-current-container', sourceContainerId)
-                    .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); }));
+                    .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); })
+                    .attr('data-cell-value', settings.data[i].value));
             }
             
         }     
@@ -210,13 +212,11 @@ function buildCellContainers(selector, settings) {
             ".GCCellContent { width: 100%; height: 80%; position: relative; }" +
             ".GCCellText { width: 100%; height: 15%; position: relative; }</style>")
             .appendTo("head");
-
         
         buildCells(this, settings, elementId);          
         buildCellContainers(this, settings);        
 
-        return this;
-        
+        return this;        
     };
 
     //function taken from https://stackoverflow.com/a/2337775/8484685
