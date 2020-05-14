@@ -132,7 +132,7 @@ function buildCells(selector, settings, sourceContainerId) {
                 selector
                 .parent()
                 .append($("<div/>")
-                    .addClass('absoluteBorder')
+                    .addClassIfExists(settings.cellClass)
                     .offset(currentPosition)
                     .width(width)
                     .height(height)
@@ -151,7 +151,7 @@ function buildCells(selector, settings, sourceContainerId) {
                 selector
                 .parent()
                 .append($("<div/>")
-                    .addClass('absoluteBorder')
+                    .addClassIfExists(settings.cellClass)
                     .html(settings.data[i].text)
                     .offset(currentPosition)
                     .width(width)
@@ -220,6 +220,15 @@ function buildCellContainers(selector, settings) {
 
         return this;        
     };
+
+    $.fn.addClassIfExists = function(classToAdd) {
+        debugger;
+        if(classToAdd) {
+            this.addClass(classToAdd)
+        }
+
+        return this;
+    }
 
     //function taken from https://stackoverflow.com/a/2337775/8484685
     $.fn.closestToOffset = function(offset) {

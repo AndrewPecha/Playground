@@ -32,7 +32,7 @@
         }
 
         .absoluteBorder {
-            border: 1px dotted green;
+            border: 5px dotted green;
             text-align: center;
             position: absolute;
             transition: top 1s, left 1s, width 1s, height 1s;
@@ -70,7 +70,8 @@
                 //data: ['shit',,,, 'woohoo!', , 'holy',, ,  'works', ,,, 'it'],
                 data: data,
                 destinationContainerId: 'gridContainer2',
-                absolutePositionedDivs: true
+                absolutePositionedDivs: true,
+                cellClass: 'absoluteBorder'
             });
 
             $("#gridContainer2").createGridContainer({
