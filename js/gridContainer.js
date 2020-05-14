@@ -51,8 +51,7 @@ function getNextAvailableCell(gridContainer) {
     for(var i = 0; i < targetCells.length; i++) {
         if(targetCells.eq(i).attr('data-content-available') === 'false'){
             return targetCells.eq(i);
-        }
-            
+        }            
     }
 }
 
@@ -128,17 +127,37 @@ function buildCells(selector, settings, sourceContainerId) {
         var currentPosition = cellPositions[i];
         var width = cellSizes[i].width;
         var height = cellSizes[i].height;
-        if(settings.data[i] !== undefined){
-            selector
+        if(settings.data[i] !== undefined) {
+            if(settings.data[i].content !== undefined) {
+                selector
                 .parent()
-                .append($("<div>")
-                .addClass('absoluteBorder')
-                .html(settings.data[i])
-                .offset(currentPosition)
-                .width(width)
-                .height(height)
-                .attr('data-current-container', sourceContainerId)
-                .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); }));
+                .append($("<div/>")
+                    .addClass('absoluteBorder')
+                    .offset(currentPosition)
+                    .width(width)
+                    .height(height)
+                    .attr('data-current-container', sourceContainerId)
+                    .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); })
+                    .append($("<div/>")
+                        .addClass("GCCellContent")
+                        .html(settings.data[i].content))
+                    .append($("<div/>")
+                        .addClass("GCCellText")
+                        .html(settings.data[i].text)));
+            }
+            else {
+                selector
+                .parent()
+                .append($("<div/>")
+                    .addClass('absoluteBorder')
+                    .html(settings.data[i].text)
+                    .offset(currentPosition)
+                    .width(width)
+                    .height(height)
+                    .attr('data-current-container', sourceContainerId)
+                    .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); }));
+            }
+            
         }     
     }
 }
@@ -183,12 +202,13 @@ function buildCellContainers(selector, settings) {
             redraw: function(data) { rebuildCellPositions(elementId, data); }
         }, options);
 
-        debugger;
-
         this.data('gridSettings', settings);
         $("<style type='text/css'> #" + elementId + 
             " { width: "+ settings.width +"; height: "+ settings.height +"; display: grid; justify-items: center; grid-template-rows: repeat("+ settings.rows +", 1fr); grid-template-columns: repeat("+ settings.columns +", 1fr);} " +
-            ".cellContainer { width: 100%; height: 100%; } .gridSvg { width: 99%; height: 100% } </style>")
+            ".cellContainer { width: 100%; height: 100%; }" +
+            ".gridSvg { width: 99%; height: 100% }" +
+            ".GCCellContent { width: 100%; height: 80%; position: relative; }" +
+            ".GCCellText { width: 100%; height: 15%; position: relative; }</style>")
             .appendTo("head");
 
         
