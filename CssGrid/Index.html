@@ -31,8 +31,15 @@
             text-align: center;
         }
 
+        .border2 {
+            border: 1px solid black ;
+            width: 99%;
+            height: 99%;
+            text-align: center;
+        }
+
         .absoluteBorder {
-            border: 5px dotted green;
+            border: 1px dotted green;
             text-align: center;
             position: absolute;
             transition: top 1s, left 1s, width 1s, height 1s;
@@ -71,7 +78,9 @@
                 data: data,
                 destinationContainerId: 'gridContainer2',
                 absolutePositionedDivs: true,
-                cellClass: 'absoluteBorder'
+                cellClass: 'absoluteBorder',
+                cellContainerClass: 'border',
+                gridContainerClass: 'border2'
             });
 
             $("#gridContainer2").createGridContainer({

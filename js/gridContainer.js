@@ -179,7 +179,7 @@ function rebuildCellPositions(elementId, data) {
 function buildCellContainers(selector, settings) {
     var totalCells = settings.rows * settings.columns;
     for(var i = 0; i < totalCells; i++) {
-        selector.append($("<div>").addClass('cellContainer').attr('data-content-available', settings.data[i] !== undefined));
+        selector.append($("<div>").addClass('cellContainer').addClassIfExists(settings.cellContainerClass).attr('data-content-available', settings.data[i] !== undefined));
     }
 }
 
@@ -190,6 +190,9 @@ function buildCellContainers(selector, settings) {
         var elementId = this.attr('id');
         if(this.data('gridSettings') !== undefined) {
             this.html('');
+            if(this.data('gridSettings').gridContainerClass)
+                this.removeClass(this.data('gridSettings').gridContainerClass);
+
             $('[data-current-container='+  elementId  +']').remove();
         }
 
@@ -203,10 +206,14 @@ function buildCellContainers(selector, settings) {
             width: '500px',
             height: '500px',
             destinationContainerId: '',
-            redraw: function(data) { rebuildCellPositions(elementId, data); }
+            redraw: function(data) { rebuildCellPositions(elementId, data); },
+            cellClass: undefined,
+            cellContainerClass: undefined,
+            gridContainerClass:  undefined
         }, options);
 
         this.data('gridSettings', settings);
+        this.addClassIfExists(settings.gridContainerClass)
         $("<style type='text/css'> #" + elementId + 
             " { width: "+ settings.width +"; height: "+ settings.height +"; display: grid; justify-items: center; grid-template-rows: repeat("+ settings.rows +", 1fr); grid-template-columns: repeat("+ settings.columns +", 1fr);} " +
             ".cellContainer { width: 100%; height: 100%; }" +
@@ -222,7 +229,6 @@ function buildCellContainers(selector, settings) {
     };
 
     $.fn.addClassIfExists = function(classToAdd) {
-        debugger;
         if(classToAdd) {
             this.addClass(classToAdd)
         }
