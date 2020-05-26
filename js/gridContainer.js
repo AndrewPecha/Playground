@@ -30,7 +30,7 @@ function moveToGridContainer(e, sourceContainerId, targetContainerId) {
         return;
     }
     var sourceContainer = $('#' + sourceContainerId);
-    var sourceGridCell = sourceContainer.children().closestToOffset(movingElement.offset());
+    var sourceGridCell = sourceContainer.children().closestToOffset(movingElement);
 
     var newWidth = targetGridCell.width();
     var newHeight = targetGridCell.height();
@@ -236,12 +236,14 @@ function buildCellContainers(selector, settings) {
         return this;
     }
 
-    //function taken from https://stackoverflow.com/a/2337775/8484685
-    $.fn.closestToOffset = function(offset) {
+    //function modified from https://stackoverflow.com/a/2337775/8484685
+    $.fn.closestToOffset = function(movingElement) {
         var el = null,
             elOffset,
-            x = offset.left,
-            y = offset.top,
+            x = $(movingElement).offset().left,
+            y = $(movingElement).offset().top,
+            xMid = x + $(movingElement).width() / 2,
+            yMid = y + $(movingElement).height() / 2,
             distance,
             dx,
             dy,
@@ -252,16 +254,19 @@ function buildCellContainers(selector, settings) {
             right = elOffset.left + $t.width();
             bottom = elOffset.top + $t.height();
     
-            if (
-                x >= elOffset.left &&
-                x <= right &&
-                y >= elOffset.top &&
-                y <= bottom
+            if (                
+                //check if the offset middle is contained within one of the elements
+                xMid >= elOffset.left &&
+                xMid <= right &&
+                yMid >= elOffset.top &&
+                yMid <= bottom
             ) {
                 el = $t;
                 return false;
             }
     
+            //if closest element is not found by midpoint calculation, find closest container by offsets
+            //this may not be applicable to the grid container library since by design the movingContainer midpoint will always be withing a cellContainer..
             var offsets = [
                 [elOffset.left, elOffset.top],
                 [right, elOffset.top],
