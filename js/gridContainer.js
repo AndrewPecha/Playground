@@ -127,42 +127,35 @@ function buildCells(selector, settings, sourceContainerId) {
         var currentPosition = cellPositions[i];
         var width = cellSizes[i].width;
         var height = cellSizes[i].height;
+        //if data exists for this cellPosition
         if(settings.data[i] !== undefined) {
+            var cellDiv = $("<div/>")
+                .addClassIfExists(settings.cellClass)                    
+                .offset(currentPosition)
+                .width(width)
+                .height(height)
+                .attr('data-current-container', sourceContainerId)
+                .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); })
+                .click(settings.data[i].function === undefined ? function() { return false; } : settings.data[i].function)
+                .attr('data-cell-value', settings.data[i].value);
+
             if(settings.data[i].content !== undefined) {
-                selector
-                .parent()
-                .append($("<div/>")
-                    .addClassIfExists(settings.cellClass)
-                    .offset(currentPosition)
-                    .width(width)
-                    .height(height)
-                    .attr('data-current-container', sourceContainerId)
-                    .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); })
+                cellDiv
                     .append($("<div/>")
                         .addClass("GCCellContent")
                         .html(settings.data[i].content))
                     .append($("<div/>")
                         .addClass("GCCellText")
-                        .html(settings.data[i].text))
-                    .click(settings.data[i].function === undefined ? function() { return false; } : settings.data[i].function)
-                    .attr('data-cell-value', settings.data[i].value));
+                        .html(settings.data[i].text));
             }
             else {
-                selector
-                .parent()
-                .append($("<div/>")
-                    .addClassIfExists(settings.cellClass)
-                    .html(settings.data[i].text)
-                    .offset(currentPosition)
-                    .width(width)
-                    .height(height)
-                    .attr('data-current-container', sourceContainerId)
-                    .click(function() { moveToGridContainer(this, sourceContainerId, settings.destinationContainerId); })
-                    .click(settings.data[i].function === undefined ? function() { return false; } : settings.data[i].function)
-                    .attr('data-cell-value', settings.data[i].value));
+                cellDiv.html(settings.data[i].text);
             }
-            
-        }     
+
+            selector
+                .parent()
+                .append(cellDiv);
+        }               
     }
 }
 
